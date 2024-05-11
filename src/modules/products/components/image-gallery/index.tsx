@@ -1,37 +1,55 @@
+"use client"
 import { Image as MedusaImage } from "@medusajs/medusa"
 import { Container } from "@medusajs/ui"
-import Image from "next/image"
+import { useState } from "react"
+import {
+  Accordion,
+  AccordionItem,
+  Button,
+  Chip,
+  Image,
+  Link,
+  RadioGroup,
+  ScrollShadow,
+} from "@nextui-org/react"
 
 type ImageGalleryProps = {
   images: MedusaImage[]
 }
 
 const ImageGallery = ({ images }: ImageGalleryProps) => {
+  const [selectedImage, setSelectedImage] = useState(images[0])
   return (
-    <div className="flex items-start relative">
-      <div className="flex flex-col flex-1 small:mx-16 gap-y-4">
-        {images.map((image, index) => {
-          return (
-            <Container
-              key={image.id}
-              className="relative aspect-[29/34] w-full overflow-hidden bg-ui-bg-subtle"
-              id={image.id}
-            >
-              <Image
-                src={image.url}
-                priority={index <= 2 ? true : false}
-                className="absolute inset-0 rounded-rounded"
-                alt={`Product image ${index + 1}`}
-                fill
-                sizes="(max-width: 576px) 280px, (max-width: 768px) 360px, (max-width: 992px) 480px, 800px"
-                style={{
-                  objectFit: "cover",
-                }}
-              />
-            </Container>
-          )
-        })}
-      </div>
+    <div className="relative flex-none w-full h-full">
+      <Image
+        alt="Product image"
+        className="w-full h-full rounded-lg"
+        src={selectedImage.url}
+      />
+      <ScrollShadow
+        className="flex w-full max-w-full gap-4 px-2 pt-2 pb-4 mt-4 -mx-2 -mb-4"
+        orientation="horizontal"
+      >
+        {images.map((image, index) => (
+          <button
+            id={image.id}
+            key={image.id}
+            className="relative h-24 w-24 flex-none cursor-pointer items-center justify-center rounded-medium ring-offset-background transition-shadow data-[selected=true]:outline-none data-[selected=true]:ring-2 data-[selected=true]:ring-focus data-[selected=true]:ring-offset-2"
+            data-selected={image === selectedImage}
+            onClick={() => setSelectedImage(image)}
+          >
+            <Image
+              removeWrapper
+              alt={`Product image ${index + 1}`}
+              classNames={{
+                img: "h-full w-full",
+              }}
+              radius="lg"
+              src={image.url}
+            />
+          </button>
+        ))}
+      </ScrollShadow>
     </div>
   )
 }
